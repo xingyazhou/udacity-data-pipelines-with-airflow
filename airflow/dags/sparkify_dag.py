@@ -1,20 +1,15 @@
 from datetime import datetime, timedelta
 import datetime
-#import logging
 import os
 from airflow import conf
 from airflow import DAG
-#from airflow.contrib.hooks.aws_hook import AwsHook
-#from airflow.hooks.postgres_hook import PostgresHook
 from airflow.operators.postgres_operator import PostgresOperator
-#from airflow.operators.python_operator import PythonOperator
 from airflow.operators.dummy_operator import DummyOperator
 
 from airflow.operators import (StageToRedshiftOperator, LoadFactOperator, LoadDimensionOperator, DataQualityOperator)
 from helpers import SqlQueries
 
 # Default args 
-
 default_args = {
     'owner': 'udacity',
     'start_date': datetime.datetime.now(),
@@ -24,12 +19,10 @@ default_args = {
     'catchup': True
 }
 
-
 dag = DAG(
     'sparkify_dag',
+    default_args = default_args,
     start_date = datetime.datetime.now()
-    
-
 )
 
 f= open(os.path.join(conf.get('core','dags_folder'),'create_tables.sql'))
