@@ -11,12 +11,15 @@ from helpers import SqlQueries
 
 # Default args 
 default_args = {
-    'owner': 'udacity',
-    'start_date': datetime.datetime.now(),
+    'owner': 'xingya-zhou',
     'depends_on_past': False,
-    'retries': 1,
+    'start_date': datetime.datetime.now(),
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 3,
     'retry_delay': timedelta(minutes=5),
-    'catchup': True
+    'catchup': False,
+    'retry_delay': timedelta(minutes=5)
 }
 
 dag = DAG(
@@ -105,18 +108,12 @@ load_time_table = LoadDimensionOperator(
     append_only=False
 )
 
-staging_quality_checks = DataQualityOperator(
-    task_id='staging_data_quality_checks',
-    dag=dag,
-    redshift_conn_id="redshift",
-    tables=[ "staging_events", "staging_songs"]
-)
 
 run_quality_checks = DataQualityOperator(
     task_id='Run_data_quality_checks',
     dag=dag,
     redshift_conn_id="redshift",
-    tables=[ "songplays", "songs", "artists", "users", "time"]
+    tables=[ "songplays", "songs", "artists",  "time", "users"]
 )
 
 end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
@@ -124,9 +121,8 @@ end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
 start_operator  \
     >> create_trips_table \
     >> [stage_events_to_redshift, stage_songs_to_redshift] \
-    >> staging_quality_checks \
     >> load_songplays_table \
-    >> [load_users_table, load_songs_table, load_artists_table, load_time_table] \
+    >> [ load_songs_table, load_artists_table, load_time_table, load_users_table] \
     >> run_quality_checks \
     >> end_operator
 
