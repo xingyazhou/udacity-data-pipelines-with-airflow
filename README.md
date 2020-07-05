@@ -15,6 +15,10 @@ For this project, there are two datasets. Here are the s3 links for each:
 >**s3://udacity-dend/song_data/**<br>
 >**s3://udacity-dend/log_data/**
 
+## Data Modeling wih Star Schema
+
+![song_play_analysis_with_star_schema!](./image/song_play_analysis_with_star_schema.png "song_play_analysis_with_star_schema")
+
 ## Configuring the DAG
 
 In the DAG, add default parameters according to these guidelines
