@@ -33,6 +33,17 @@ In addition, configure the task dependencies so that after the dependencies are 
 
 ![DAG!](./image/sparkify-dag.png "sparkify-dag")
 
+**Configure the task dependencies**
+```
+start_operator  \
+    >> create_trips_table \
+    >> [stage_events_to_redshift, stage_songs_to_redshift] \
+    >> load_songplays_table \
+    >> [ load_songs_table, load_artists_table, load_time_table, load_users_table] \
+    >> run_quality_checks \
+    >> end_operator
+```
+
 ## Project Files
 
 This project workspace includes 2 folders: dags, plugins as shown in the following figure:
